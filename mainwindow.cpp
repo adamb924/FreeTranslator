@@ -19,7 +19,8 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent)
 
     if( argc == 2 )
     {
-        mFlexText.readXml(QString(argv[1]));
+        if( !mFlexText.readXml(QString(argv[1])) )
+            QMessageBox::critical(0,tr("Error"),tr("%1 could not be opened.").arg(QString(argv[1])));
         setUiElements();
         setAnnotation( 0 );
     }
