@@ -137,7 +137,13 @@ void FlexText::setAnnotation(QString annotation, int i, QString language)
 
     QDomNode gloss = getGlossItem(i, language);
     if( gloss.isNull() )
+    {
         mPhrases.at(i).appendChild(newItem);
+    }
     else
+    {
+        if( gloss.toElement().text() != annotation )
+            bFileChanged = true;
         mPhrases.at(i).replaceChild(newItem,gloss);
+    }
 }

@@ -61,8 +61,6 @@ private slots:
     void first();
     void last();
     void goTo();
-
-    void setModified();
 };
 
 #endif // MAINWINDOW_H

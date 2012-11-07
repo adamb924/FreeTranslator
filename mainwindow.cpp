@@ -130,8 +130,6 @@ void MainWindow::setupUi()
 
         gridLayout->addWidget(new QLabel(mConfiguation.languageNames()->at(i)), i+1 , 0 );
         gridLayout->addWidget(aTranslations.last(), i+1 , 1 );
-
-        connect( aTranslations.last(), SIGNAL(textChanged()), this, SLOT(setModified()) );
     }
 
     vlayout->addLayout(gridLayout);
@@ -302,9 +300,4 @@ void MainWindow::goTo()
         saveTranslations();
         setAnnotation( i-1 );
     }
-}
-
-void MainWindow::setModified()
-{
-    mFlexText.setFileChanged(true);
 }
