@@ -9,8 +9,9 @@ class Configuration
 public:
     Configuration();
 
-    bool readXml(QString filename);
+    bool readXml(const QString & filename);
 
+    QString filename() const;
     QString display() const;
     QString displayName() const;
     QStringList* languages();
@@ -19,6 +20,7 @@ public:
     bool isValid() const;
 
 private:
+    QString mFilename;
     QString mDisplay;
     QString mDisplayName;
     QStringList mTranslations;

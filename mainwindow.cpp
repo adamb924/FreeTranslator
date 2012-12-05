@@ -18,12 +18,7 @@ MainWindow::MainWindow(int argc, char *argv[], QWidget *parent)
     setupMenu();
 
     if( argc == 2 )
-    {
-        if( !mFlexText.readXml(QString(argv[1])) )
-            QMessageBox::critical(0,tr("Error"),tr("%1 could not be opened.").arg(QString(argv[1])));
-        setUiElements();
-        setAnnotation( 0 );
-    }
+        open( QString(argv[1]) );
 }
 
 MainWindow::~MainWindow()
@@ -199,12 +194,32 @@ void MainWindow::open()
     QString filename = QFileDialog::getOpenFileName(this,tr("Open"),QString(),"*.flextext");
     if( filename.isEmpty() )
         return;
+    open(filename);
+}
 
-    if( !mFlexText.readXml(filename) )
-        return;
-
-    setUiElements();
-    setAnnotation( 0 );
+void MainWindow::open(const QString & filename)
+{
+    switch(mFlexText.readXml(filename))
+    {
+    case FlexText::Success:
+        setUiElements();
+        setAnnotation( 0 );
+        if( mFlexText.phraseCount() == 0 )
+            QMessageBox::critical(this, tr("Error opening file"), tr("The file has been opened, but there are no phrases. Presumably this means something has gone wrong, but the reason cannot be determined right now."));
+        break;
+    case FlexText::InvalidConfiguration:
+        QMessageBox::critical(this, tr("Error opening file"), tr("The file could not be opened because the configuration file in the folder is invalid."));
+        break;
+    case FlexText::CannotOpenFile:
+        QMessageBox::critical(this, tr("Error opening file"), tr("The file could not be opened (file read error)."));
+        break;
+    case FlexText::CannotSetContent:
+        QMessageBox::critical(this, tr("Error opening file"), tr("The file could not be opened; the file could not be set to the content of the QXmlDocument. This might mean that there is something wrong with the FlexText file."));
+        break;
+    case FlexText::IncompatibleWithConfiguration:
+        QMessageBox::critical(this, tr("Error opening file"), tr("The file could not be opened because it is incompatible with the configuration file: there were word elements without child items with the writing system '%1'.").arg(mConfiguation.display()));
+        break;
+    }
 }
 
 void MainWindow::save()

@@ -11,7 +11,9 @@ class FlexText
 public:
     FlexText();
 
-    bool readXml(QString filename);
+    enum ReadResult { Success, InvalidConfiguration, CannotOpenFile, CannotSetContent, IncompatibleWithConfiguration };
+
+    ReadResult readXml(QString filename);
 
     bool isValid() const;
 

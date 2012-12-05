@@ -7,9 +7,10 @@ Configuration::Configuration()
 {
 }
 
-bool Configuration::readXml(QString filename)
+bool Configuration::readXml(const QString & filename)
 {
-    QFile file(filename);
+    mFilename = filename;
+    QFile file(mFilename);
     if (!file.open(QIODevice::ReadOnly))
         return false;
     QDomDocument *document = new QDomDocument;
@@ -36,6 +37,11 @@ bool Configuration::readXml(QString filename)
     }
 
     return true;
+}
+
+QString Configuration::filename() const
+{
+    return mFilename;
 }
 
 QString Configuration::display() const

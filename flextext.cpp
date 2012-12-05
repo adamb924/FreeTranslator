@@ -1,16 +1,21 @@
 #include "flextext.h"
 
 #include <QtXml>
+#include <QXmlQuery>
+#include <QXmlResultItems>
+
+#include "messagehandler.h"
 
 FlexText::FlexText()
 {
     bValid = false;
 }
 
-bool FlexText::readXml(QString filename)
+
+FlexText::ReadResult FlexText::readXml(QString filename)
 {
     if( !pConfiguration->isValid() )
-        return false;
+        return FlexText::InvalidConfiguration;
 
     mFilename = filename;
 
@@ -18,21 +23,21 @@ bool FlexText::readXml(QString filename)
 
     QFile file(mFilename);
     if (!file.open(QIODevice::ReadOnly))
-        return false;
+        return FlexText::CannotOpenFile;
     mDocument = new QDomDocument;
     if (!mDocument->setContent(&file)) {
         file.close();
-        return false;
+        return FlexText::CannotSetContent;
     }
     file.close();
 
     if( !isCompatibleWithConfiguration() )
-        return false;
+        return FlexText::IncompatibleWithConfiguration;
 
     mPhrases = mDocument->elementsByTagName("phrase");
 
     bValid = true;
-    return true;
+    return FlexText::Success;
 }
 
 bool FlexText::isValid() const
@@ -67,12 +72,17 @@ void FlexText::setConfiguration(Configuration *configuration)
 
 bool FlexText::isCompatibleWithConfiguration()
 {
-    QDomNodeList items = mDocument->documentElement().firstChildElement("interlinear-text").firstChildElement("paragraphs").firstChildElement("paragraph").firstChildElement("phrases").firstChildElement("phrase").firstChildElement("words").firstChildElement("word").elementsByTagName("item");
-    for(int i=0; items.count(); i++)
-        if( items.at(i).attributes().contains("lang") )
-            if( items.at(i).attributes().namedItem("lang").toAttr().value() == pConfiguration->display() )
-                return true;
-    return false;
+    QXmlQuery query(QXmlQuery::XQuery10);
+    query.setFocus(QUrl(mFilename));
+    query.setMessageHandler(new MessageHandler(0));
+    query.setQuery(QString("count(/document/interlinear-text/paragraphs/paragraph/phrases/phrase/words/word[count(item[@lang='%1']) = 0])").arg(pConfiguration->display()));
+    QXmlResultItems result;
+    query.evaluateTo(&result);
+    QXmlItem item(result.next());
+    if(!item.isNull() && item.isAtomicValue() && item.toAtomicValue().toInt() > 0 )
+        return false;
+    else
+        return true;
 }
 
 int FlexText::phraseCount() const

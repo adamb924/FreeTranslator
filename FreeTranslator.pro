@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml
+QT       += core gui xml xmlpatterns
 
 TARGET = FreeTranslator
 TEMPLATE = app
@@ -13,8 +13,10 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     flextext.cpp \
-    configuration.cpp
+    configuration.cpp \
+    messagehandler.cpp
 
 HEADERS  += mainwindow.h \
     flextext.h \
-    configuration.h
+    configuration.h \
+    messagehandler.h

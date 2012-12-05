@@ -48,6 +48,7 @@ private:
 
 private slots:
     void open();
+    void open(const QString & filename);
     void save();
 
     void nextAnnotation();
