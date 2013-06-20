@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml xmlpatterns
+QT       += core gui widgets xml xmlpatterns
 
 TARGET = FreeTranslator
 TEMPLATE = app

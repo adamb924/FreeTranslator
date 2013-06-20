@@ -1,7 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui>
+#include <QMainWindow>
+
+class QLabel;
+class QPushButton;
+class QTextEdit;
 
 #include "flextext.h"
 #include "configuration.h"

@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QtXml>
 
 MainWindow::MainWindow(int argc, char *argv[], QWidget *parent)
